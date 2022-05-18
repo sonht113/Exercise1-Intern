@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 
 const Navbar:React.FC = () => {
     return(
-        <div className="Navbar w-[300px] z-10">
+        <div className="Navbar sticky top-0 left-0 w-[300px] z-10">
             <div className="navbar-logo flex justify-center pt-5">
                 <img className="w-[150px] object-cover" src={logo} alt="logo"/>
             </div>

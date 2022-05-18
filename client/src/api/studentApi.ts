@@ -1,9 +1,9 @@
-import {Student} from "../models/Student";
+import {Student, StudentPost} from "../models/Student";
 import axiosClient from "./axiosClient";
 import {ListResponse} from "../models/Common";
 
 const studentApi = {
-    add: async (data: Student): Promise<Student> => {
+    add: async (data: FormData): Promise<Student> => {
         const url = '/students/add-student'
         return await axiosClient.post(url, data)
     },
@@ -20,7 +20,7 @@ const studentApi = {
         const url = `/student-detail/${id}`
         return await axiosClient.get(url)
     },
-    update: async (id: string, data: Student): Promise<Student> => {
+    update: async (id: string, data: FormData): Promise<Student> => {
         const url = `/students/update-student/${id}`
         return await axiosClient.put(url, data)
     },

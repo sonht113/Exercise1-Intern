@@ -20,7 +20,7 @@ const studentApi = {
         const url = `/student-detail/${id}`
         return await axiosClient.get(url)
     },
-    update: async (id: string, data: FormData): Promise<Student> => {
+    update: async (id: string, data: Student): Promise<Student> => {
         const url = `/students/update-student/${id}`
         return await axiosClient.put(url, data)
     },

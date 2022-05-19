@@ -1,68 +1,117 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {IoCloseCircleSharp} from "react-icons/io5";
 import studentApi from "../../api/studentApi";
-import {Student} from "../../models/Student";
+
 
 interface modalProp {
     isOpenModal: boolean;
     setIsOpenModal: any;
+    setCheckStudent: any;
     title: string;
-    student: Student;
+    student: {
+        _id: string;
+        firstname: string;
+        lastname: string;
+        age: string;
+        classStudent: string;
+    };
 };
 
 
 const Modal: React.FC<modalProp> = (props) => {
-    const {isOpenModal, setIsOpenModal, title, student} = props
+    const {isOpenModal, setIsOpenModal, setCheckStudent, title, student} = props
     const [firstname, setFirstName] = useState<string>("")
     const [lastname, setLastName] = useState<string>("")
     const [age, setAge] = useState<string>("")
     const [classStu, setClassStu] = useState<string>("")
     const [file, setFile] = useState(null)
 
-    const [firstnameUp, setFirstNameUp] = useState<string>(student.firstname)
-    const [lastnameUp, setLastNameUp] = useState<string>(student.lastname)
-    const [ageUp, setAgeUp] = useState<string>(student.age)
-    const [classStuUp, setClassStuUp] = useState<string>(student.classStudent)
+    const [idUp, setIdUp] = useState<string>('')
+    const [firstnameUp, setFirstNameUp] = useState<string>('')
+    const [lastnameUp, setLastNameUp] = useState<string>('')
+    const [ageUp, setAgeUp] = useState<string>('')
+    const [classStuUp, setClassStuUp] = useState<string>('')
 
-
-    console.log(firstnameUp)
     const [error, setError] = useState<string>("")
     const [created, setCreated] = useState<boolean>(false)
+    const [updated, setUpdated] = useState<boolean>(false)
+
+    const ref = useRef<HTMLInputElement>(null) ;
 
     const handleChangeFile =(e: any) => {
         setFile(e.target.files[0])
     }
 
-    let formData = new FormData()
-    formData.append('firstname', firstname)
-    formData.append('lastname', lastname)
-    formData.append('age', age)
-    formData.append('classStudent', classStu)
-    // @ts-ignore
-    formData.append('student_pic', file)
+    useEffect(() => {
+        setIdUp(student._id)
+        setFirstNameUp(student.firstname)
+        setLastNameUp(student.lastname)
+        setAgeUp(student.age)
+        setClassStuUp(student.classStudent)
+    }, [student]);
 
+    let formData = new FormData()
+    if(title === "Update Student") {
+        formData.append('firstname', firstnameUp)
+        formData.append('lastname', lastnameUp)
+        formData.append('age', ageUp)
+        formData.append('classStudent', classStuUp)
+        // @ts-ignore
+        formData.append('student_pic', file)
+    } else {
+        formData.append('firstname', firstname)
+        formData.append('lastname', lastname)
+        formData.append('age', age)
+        formData.append('classStudent', classStu)
+        // @ts-ignore
+        formData.append('student_pic', file)
+    }
+
+    // CREATE STUDENT
     const handleCreateStudent = (e: any) => {
         e.preventDefault()
         studentApi.add(formData)
             .then((res) => {
-                console.log(res)
                 setFirstName("")
                 setLastName("")
                 setAge("")
                 setClassStu("")
                 setFile(null)
+                setCheckStudent(true)
+                // @ts-ignore
+                ref.current.value = ""
                 setError("")
                 setCreated(true)
             })
             .catch((err) => {
                 setError(err.response.data)
+                setCheckStudent(false)
                 setCreated(false)
             })
     }
 
+    // UPDATE STUDENT
     const handleUpdateStudent = (e: any) => {
         e.preventDefault()
-        formData.forEach(v => console.log(v))
+        // @ts-ignore
+        studentApi.update(idUp, formData)
+            .then((res) => {
+                setFirstNameUp("")
+                setLastNameUp("")
+                setAgeUp("")
+                setClassStuUp("")
+                setFile(null)
+                // @ts-ignore
+                ref.current.value = ""
+                setUpdated(true)
+                setCheckStudent(true)
+                setError("")
+            })
+            .catch((err) => {
+                setError(err.response.data)
+                setCheckStudent(false)
+                setUpdated(false)
+            })
     }
 
     return(
@@ -79,6 +128,7 @@ const Modal: React.FC<modalProp> = (props) => {
                 <button className="close-modal absolute top-3 right-5" onClick={() => {
                     setIsOpenModal(false)
                     setCreated(false)
+                    setUpdated(false)
                 }}>
                     <IoCloseCircleSharp className="text-5xl fill-white" />
                 </button>
@@ -96,6 +146,11 @@ const Modal: React.FC<modalProp> = (props) => {
                             <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-green-600">Create successfully!</div>
                         ) : null
                     }
+                    {
+                        updated ? (
+                            <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-green-600">Update successfully!</div>
+                        ) : null
+                    }
                     <div></div>
                     <form className="w-[50%] py-10 px-5 bg-white rounded-2xl">
                         <div className="grid xl:grid-cols-2 xl:gap-6">
@@ -103,12 +158,12 @@ const Modal: React.FC<modalProp> = (props) => {
                                 <input type="text" name="firstname" id="floating_first_name"
                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        required={true} minLength={3}
-                                           defaultValue={title === "Update Student" ? firstnameUp : firstname}
-                                        onChange={(e) => {
-                                            title === "Update Student"
-                                                ? setFirstNameUp(e.target.value)
-                                                : setFirstName(e.target.value)
-                                        }}
+                                       value={title === "Update Student" ? firstnameUp || '' : firstname || ''}
+                                       onChange={(e) => {
+                                           title === "Update Student"
+                                               ? setFirstNameUp(e.target.value)
+                                               : setFirstName(e.target.value)
+                                       }}
                                 />
                                 <label htmlFor="floating_first_name"
                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
@@ -118,8 +173,12 @@ const Modal: React.FC<modalProp> = (props) => {
                                 <input type="text" name="lastname" id="floating_last_name"
                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                        required={true}
-                                       value={title === "Update Student" ? student.lastname : lastname}
-                                        onChange={(e) => setLastName(e.target.value)}/>
+                                       value={title === "Update Student" ? lastnameUp || '' : lastname || ''}
+                                       onChange={(e) => {
+                                           title === "Update Student"
+                                               ? setLastNameUp(e.target.value)
+                                               : setLastName(e.target.value)
+                                       }}/>
                                 <label htmlFor="floating_last_name"
                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                     Last name</label>
@@ -129,19 +188,27 @@ const Modal: React.FC<modalProp> = (props) => {
                             <input type="text" name="age"
                                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                    required={true}
-                                   value={title === "Update Student" ? student.age : age}
-                                    onChange={(e) => setAge(e.target.value)}/>
-                                <label htmlFor="floating_age"
-                                       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Age</label>
+                                   value={title === "Update Student" ? ageUp || '' : age || ''}
+                                   onChange={(e) => {
+                                       title === "Update Student"
+                                           ? setAgeUp(e.target.value)
+                                           : setAge(e.target.value)
+                                   }}/>
+                            <label htmlFor="floating_age"
+                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Age</label>
                         </div>
                         <div className="relative z-0 w-full mb-6 group">
                             <input type="text" name="classStudent" id="floating_class"
                                    className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                    required={true}
-                                   value={title === "Update Student" ? student.classStudent :classStu}
-                                    onChange={(e) => setClassStu(e.target.value)}/>
-                                <label htmlFor="floating_password"
-                                       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Class</label>
+                                   value={title === "Update Student" ? classStuUp || '' : classStu || ''}
+                                   onChange={(e) => {
+                                       title === "Update Student"
+                                           ? setClassStuUp(e.target.value)
+                                           : setClassStu(e.target.value)
+                                   }}/>
+                            <label htmlFor="floating_password"
+                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Class</label>
                         </div>
                         <div className="relative z-0 w-full mb-6 group">
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-500"
@@ -150,12 +217,13 @@ const Modal: React.FC<modalProp> = (props) => {
                                 className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                 aria-describedby="student_avatar_help"
                                 name="student_pic"
-                                id="user_avatar"
+                                ref={ref}
+                                id="student_avatar"
                                 onChange={handleChangeFile}
                                 required={true}
                                 type="file" />
-                            <div className="mt-1 text-sm text-gray-500 dark:text-gray-500" id="student_avatar_help">A
-                                profile picture for student!
+                            <div className="mt-1 text-sm text-gray-500 dark:text-gray-500" id="student_avatar_help">
+                                A profile picture for student!
                             </div>
                         </div>
                         <button type="submit"
@@ -164,7 +232,6 @@ const Modal: React.FC<modalProp> = (props) => {
                             {title === "Create Student" ? "Create" : "Update"}
                         </button>
                     </form>
-
                 </div>
             </div>
         </div>

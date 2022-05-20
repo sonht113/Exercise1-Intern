@@ -22,6 +22,7 @@ const StudentPage: React.FC = () => {
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
     const [checkStudent, setCheckStudent] = useState<boolean>(false)
     const [create, setCreate] = useState<boolean>(false)
+    const [modalKey, setModalKey] = useState<string>("")
     // @ts-ignore
     const [studentModal, setStudentModal] = useState<StudentDocument>({})
     // @ts-ignore
@@ -62,6 +63,11 @@ const StudentPage: React.FC = () => {
         setStudentDelete(student)
     }
 
+    useEffect(() => {
+        setModalKey(String(Math.random()))
+    }, [studentModal]);
+
+
     return(
         <div>
             <Header />
@@ -79,6 +85,7 @@ const StudentPage: React.FC = () => {
                 </div>
                 {/*Modal*/}
                 <Modal
+                    key={modalKey}
                     isOpenModal={isOpenModal}
                     setIsOpenModal={setIsOpenModal}
                     setCheckStudent={setCheckStudent}

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {IoCloseCircleSharp} from "react-icons/io5";
 import studentApi from "../../api/studentApi";
-import FirstNameInput from "../Shared/Form/FirstNameInput";
+import Input from "../Shared/Form/Input";
 import {StudentDocument} from "../../models/Student";
 
 
@@ -52,14 +52,11 @@ const Modal: React.FC<modalProp> = (props) => {
     }, [studentModal]);
 
     let formData = new FormData()
-    if(student._id) {
-        formData.append('firstname', student.firstname)
-        formData.append('lastname', student.lastname)
-        formData.append('age', student.age)
-        formData.append('classStudent', student.classStudent)
-        // @ts-ignore
-        formData.append('student_pic', file)
-    }
+    Object.entries(student).filter(value => value !== student.avatar).forEach((value, index) => {
+        formData.append(value[0], value[1])
+    })
+    // @ts-ignore
+    formData.append('student_pic', file)
 
     // CREATE STUDENT
     const handleCreateStudent = (e: any) => {
@@ -131,43 +128,38 @@ const Modal: React.FC<modalProp> = (props) => {
                     <form className="w-[50%] py-10 px-5 bg-white rounded-2xl">
                         <div className="grid xl:grid-cols-2 xl:gap-6">
                             {/*firstname*/}
-                            <FirstNameInput
-                                validation={validation}
-                                setValidation={setValidation}
-                                student={student}
+                            <Input
+                                label={"Firstname"}
+                                content={student.firstname}
                                 onChange={(text) => {
-                                    console.log(text)
+                                    setStudent({...student, firstname: text})
                                 }}
                             />
-                            <div className="relative z-0 w-full mb-6 group">
-                                <input type="text" name="lastname" id="floating_last_name"
-                                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                       required={true}
-                                       value={student._id ? student.lastname || '' : ''}/>
-                                <label htmlFor="floating_last_name"
-                                       className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                    Last name</label>
-                            </div>
+                            {/*lastname*/}
+                            <Input
+                                label={"Lastname"}
+                                content={student.lastname}
+                                onChange={(text) => {
+                                    setStudent({...student, lastname: text})
+                                }}
+                            />
                         </div>
-                        <div className="relative z-0 w-full mb-6 group">
-                            <input type="text" name="age"
-                                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                   required={true}
-                                   value={student._id ? student.age || '' : ''}/>
-                            <label htmlFor="floating_age"
-                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                Age
-                            </label>
-                        </div>
-                        <div className="relative z-0 w-full mb-6 group">
-                            <input type="text" name="classStudent" id="floating_class"
-                                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                   required={true}
-                                   value={student._id ? student.classStudent || '' : ''} />
-                            <label htmlFor="floating_password"
-                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >Class</label>
-                        </div>
+                        {/*age*/}
+                        <Input
+                            label={"Age"}
+                            content={student.age}
+                            onChange={(text) => {
+                                setStudent({...student, age: text})
+                            }}
+                        />
+                        {/*class*/}
+                        <Input
+                            label={"Class"}
+                            content={student.classStudent}
+                            onChange={(text) => {
+                                setStudent({...student, classStudent: text})
+                            }}
+                        />
                         <div className="relative z-0 w-full mb-6 group">
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-500"
                                    htmlFor="student_avatar">Upload file</label>

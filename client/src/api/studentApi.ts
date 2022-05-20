@@ -24,7 +24,7 @@ const studentApi = {
         const url = `/students/update-student/${id}`
         return await axiosClient.put(url, data)
     },
-    delete: async (id: string): Promise<any> => {
+    delete: async (id: string | undefined): Promise<any> => {
         const url = `/students/delete-student/${id}`
         return await axiosClient.delete(url)
     }

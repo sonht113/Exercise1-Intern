@@ -17,6 +17,14 @@ interface modalProp {
     };
 };
 
+interface Validation {
+    firstnameErr: string;
+    lastnameErr: string;
+    ageErr: string;
+    classErr: string;
+    fileErr: string;
+}
+
 
 const Modal: React.FC<modalProp> = (props) => {
     const {isOpenModal, setIsOpenModal, setCheckStudent, title, student} = props
@@ -32,9 +40,8 @@ const Modal: React.FC<modalProp> = (props) => {
     const [ageUp, setAgeUp] = useState<string>('')
     const [classStuUp, setClassStuUp] = useState<string>('')
 
+    //Error
     const [error, setError] = useState<string>("")
-    const [created, setCreated] = useState<boolean>(false)
-    const [updated, setUpdated] = useState<boolean>(false)
 
     const ref = useRef<HTMLInputElement>(null) ;
 
@@ -81,12 +88,11 @@ const Modal: React.FC<modalProp> = (props) => {
                 // @ts-ignore
                 ref.current.value = ""
                 setError("")
-                setCreated(true)
+                setIsOpenModal(false)
             })
             .catch((err) => {
                 setError(err.response.data)
                 setCheckStudent(false)
-                setCreated(false)
             })
     }
 
@@ -103,14 +109,13 @@ const Modal: React.FC<modalProp> = (props) => {
                 setFile(null)
                 // @ts-ignore
                 ref.current.value = ""
-                setUpdated(true)
                 setCheckStudent(true)
                 setError("")
+                setIsOpenModal(false)
             })
             .catch((err) => {
                 setError(err.response.data)
                 setCheckStudent(false)
-                setUpdated(false)
             })
     }
 
@@ -122,13 +127,10 @@ const Modal: React.FC<modalProp> = (props) => {
         >
             <a className="w-full h-[100%] top-0 left-0 absolute bg-black opacity-80 z-[1] duration-200 transform delay-600" onClick={() => {
                 setIsOpenModal(false)
-                setCreated(false)
             }}></a>
             <div className="modal relative w-full z-[2]">
                 <button className="close-modal absolute top-3 right-5" onClick={() => {
                     setIsOpenModal(false)
-                    setCreated(false)
-                    setUpdated(false)
                 }}>
                     <IoCloseCircleSharp className="text-5xl fill-white" />
                 </button>
@@ -141,16 +143,6 @@ const Modal: React.FC<modalProp> = (props) => {
                             <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-red-600">{error}</div>
                         ) : null
                     }
-                    {
-                        created ? (
-                            <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-green-600">Create successfully!</div>
-                        ) : null
-                    }
-                    {
-                        updated ? (
-                            <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-green-600">Update successfully!</div>
-                        ) : null
-                    }
                     <div></div>
                     <form className="w-[50%] py-10 px-5 bg-white rounded-2xl">
                         <div className="grid xl:grid-cols-2 xl:gap-6">
@@ -161,8 +153,8 @@ const Modal: React.FC<modalProp> = (props) => {
                                        value={title === "Update Student" ? firstnameUp || '' : firstname || ''}
                                        onChange={(e) => {
                                            title === "Update Student"
-                                               ? setFirstNameUp(e.target.value)
-                                               : setFirstName(e.target.value)
+                                                ? setFirstNameUp(e.target.value)
+                                                : setFirstName(e.target.value)
                                        }}
                                 />
                                 <label htmlFor="floating_first_name"
@@ -195,7 +187,9 @@ const Modal: React.FC<modalProp> = (props) => {
                                            : setAge(e.target.value)
                                    }}/>
                             <label htmlFor="floating_age"
-                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Age</label>
+                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                Age
+                            </label>
                         </div>
                         <div className="relative z-0 w-full mb-6 group">
                             <input type="text" name="classStudent" id="floating_class"
@@ -208,7 +202,8 @@ const Modal: React.FC<modalProp> = (props) => {
                                            : setClassStu(e.target.value)
                                    }}/>
                             <label htmlFor="floating_password"
-                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Class</label>
+                                   className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                            >Class</label>
                         </div>
                         <div className="relative z-0 w-full mb-6 group">
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-500"

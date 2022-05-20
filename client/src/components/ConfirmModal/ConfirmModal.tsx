@@ -6,7 +6,6 @@ interface confirmProp {
     isOpen: boolean;
     setStudentDelete: any;
     setCheckDeleteStudent: any;
-    setDeleteTitle: any;
     student: {
         _id: string;
         firstname: string;
@@ -16,7 +15,7 @@ interface confirmProp {
     };
 }
 const ConfirmModal:React.FC<confirmProp> = (props) => {
-    const {setIsOpen, isOpen, setStudentDelete, setCheckDeleteStudent, setDeleteTitle, student} = props
+    const {setIsOpen, isOpen, setStudentDelete, setCheckDeleteStudent, student} = props
 
     const [id, setId] = useState<string>('')
     const [firstname, setFirstName] = useState<string>('')
@@ -40,13 +39,12 @@ const ConfirmModal:React.FC<confirmProp> = (props) => {
         studentApi
             .delete(id)
             .then((res) => {
-                setDeleteTitle(res)
                 setIsDeleteSuccess(true)
                 setCheckDeleteStudent(true)
                 setIsOpen(false)
             })
             .catch((err) => {
-                setDeleteTitle(err.response.data)
+                console.log(err)
                 setCheckDeleteStudent(false)
                 setIsDeleteSuccess(false)
             })

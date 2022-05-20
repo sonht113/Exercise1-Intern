@@ -23,7 +23,6 @@ const StudentPage: React.FC = () => {
     const [title, setTitle] = useState<string>("Create Student")
     const [checkStudent, setCheckStudent] = useState<boolean>(false)
     const [create, setCreate] = useState<boolean>(false)
-    const [deleteTitle, setDeleteTitle] = useState<string>('')
     // @ts-ignore
     const [studentModal, setStudentModal] = useState<Student>({})
     // @ts-ignore
@@ -96,7 +95,6 @@ const StudentPage: React.FC = () => {
                             isOpen={isOpenConfirmModal}
                             setCheckDeleteStudent={setCheckStudent}
                             setStudentDelete={setStudentDelete}
-                            setDeleteTitle={setDeleteTitle}
                             student={studentDelete}/>
                         : null
                 }

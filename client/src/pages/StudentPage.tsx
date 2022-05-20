@@ -11,7 +11,7 @@ import AnimatedPage from "../animation/AnimatedPage";
 import studentApi from "../api/studentApi";
 import {studentSlice} from "../slice/studentSlice";
 import {selectRemainingStudents} from "../app/selector";
-import {Student} from "../models/Student";
+import {Student, StudentDocument} from "../models/Student";
 import emptyStudent from "../lottefiles/student-empty.json";
 import Modal from "../components/Modal/Modal";
 import ConfirmModal from "../components/ConfirmModal/ConfirmModal";
@@ -20,13 +20,12 @@ import ConfirmModal from "../components/ConfirmModal/ConfirmModal";
 const StudentPage: React.FC = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
-    const [title, setTitle] = useState<string>("Create Student")
     const [checkStudent, setCheckStudent] = useState<boolean>(false)
     const [create, setCreate] = useState<boolean>(false)
     // @ts-ignore
-    const [studentModal, setStudentModal] = useState<Student>({})
+    const [studentModal, setStudentModal] = useState<StudentDocument>({})
     // @ts-ignore
-    const [studentDelete, setStudentDelete] = useState<Student>(null)
+    const [studentDelete, setStudentDelete] = useState<StudentDocument>({})
     const dispatch = useAppDispatch()
 
     const listStudent = useAppSelector(selectRemainingStudents).students
@@ -55,7 +54,6 @@ const StudentPage: React.FC = () => {
 
     const handleEdit = (student: Student) => {
         setStudentModal(student)
-        setTitle("Update Student")
         setIsOpenModal(true)
     }
 
@@ -73,8 +71,8 @@ const StudentPage: React.FC = () => {
                     className="absolute top-3 right-3 flex justify-center items-center w-[40px] h-[40px] rounded-full cursor-pointer z-20 bg-green-600 hover:scale-125 duration-150"
                     onClick={() => {
                         setCreate(true)
+                        setStudentModal({} as StudentDocument)
                         setIsOpenModal(true)
-                        setTitle("Create Student")
                     }}
                 >
                     <FaPlus className="text-md fill-white" />
@@ -84,8 +82,7 @@ const StudentPage: React.FC = () => {
                     isOpenModal={isOpenModal}
                     setIsOpenModal={setIsOpenModal}
                     setCheckStudent={setCheckStudent}
-                    title={title}
-                    student={studentModal}/>
+                    studentModal={studentModal}/>
 
                 {/*Confirm Modal*/}
                 {
@@ -148,7 +145,9 @@ const StudentPage: React.FC = () => {
                                                     <div className="col-span-3 edit flex justify-around items-center">
                                                         <BiEdit
                                                             className="text-xl fill-green-600 cursor-pointer hover:scale-125 duration-150"
-                                                            onClick={() => handleEdit(student)}/>
+                                                            onClick={() => {
+                                                                handleEdit(student)
+                                                            }}/>
                                                         <MdOutlineDeleteOutline
                                                             className="text-xl fill-red-600 cursor-pointer hover:scale-125 duration-150"
                                                             onClick={() => handleDelete(student)}/>

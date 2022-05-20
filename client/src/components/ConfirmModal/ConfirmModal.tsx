@@ -1,27 +1,20 @@
 import React, {useEffect, useState} from "react";
 import studentApi from "../../api/studentApi";
+import {StudentDocument} from "../../models/Student";
 
 interface confirmProp {
     setIsOpen: any;
     isOpen: boolean;
     setStudentDelete: any;
     setCheckDeleteStudent: any;
-    student: {
-        _id: string;
-        firstname: string;
-        lastname: string;
-        age: string;
-        classStudent: string;
-    };
+    student: StudentDocument;
 }
 const ConfirmModal:React.FC<confirmProp> = (props) => {
     const {setIsOpen, isOpen, setStudentDelete, setCheckDeleteStudent, student} = props
 
-    const [id, setId] = useState<string>('')
+    const [id, setId] = useState<string | undefined>('')
     const [firstname, setFirstName] = useState<string>('')
     const [lastname, setLastName] = useState<string>('')
-    const [isDeleteSuccess, setIsDeleteSuccess] = useState<boolean>(false)
-
 
     useEffect(() => {
         setId(student._id)
@@ -38,15 +31,13 @@ const ConfirmModal:React.FC<confirmProp> = (props) => {
         e.preventDefault()
         studentApi
             .delete(id)
-            .then((res) => {
-                setIsDeleteSuccess(true)
+            .then(() => {
                 setCheckDeleteStudent(true)
                 setIsOpen(false)
             })
             .catch((err) => {
                 console.log(err)
                 setCheckDeleteStudent(false)
-                setIsDeleteSuccess(false)
             })
     }
 

@@ -12,7 +12,7 @@ function App() {
       <div className="App flex justify-between">
         <Router>
           <Navbar />
-          <div className="Main w-full h-[100vh]">
+          <div className="Main w-full min-h-screen">
             <AnimatePresence exitBeforeEnter>
               <Routes>
                 <Route path="/" element={<StudentPage />} />

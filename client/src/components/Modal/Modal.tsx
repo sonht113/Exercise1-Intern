@@ -24,6 +24,7 @@ interface Validation {
 const Modal: React.FC<modalProp> = (props) => {
     const {isOpenModal, setIsOpenModal, setCheckStudent, studentModal} = props
     const [file, setFile] = useState(null)
+    const [validationFile, setValidationFile] = useState<string>("")
     const [student, setStudent] = useState<StudentDocument>({
         _id: "",
         firstname: "",
@@ -45,6 +46,11 @@ const Modal: React.FC<modalProp> = (props) => {
     const ref = useRef<HTMLInputElement>(null) ;
     const handleChangeFile =(e: any) => {
         setFile(e.target.files[0])
+        if(e.target.files.length) {
+            setValidationFile("")
+        } else {
+            setValidationFile("Please choose image!")
+        }
     }
 
     useEffect(() => {
@@ -98,10 +104,10 @@ const Modal: React.FC<modalProp> = (props) => {
     return(
         <div className={
             isOpenModal
-                ? "fixed w-full h-[100%] top-0 left-0 z-30 flex items-start justify-center transition"
-                : "fixed w-full h-[100%] top-0 left-0 z-[1000] flex items-start justify-center invisible opacity-0 scale-50 transition"}
+                ? "fixed w-full min-h-screen top-0 left-0 z-30 flex items-start justify-center transition"
+                : "fixed w-full min-h-screen top-0 left-0 z-[1000] flex items-start justify-center invisible opacity-0 scale-50 transition"}
         >
-            <a className="w-full h-[100%] top-0 left-0 absolute bg-black opacity-80 z-[1] duration-200 transform delay-600"
+            <a className="w-full min-h-screen top-0 left-0 absolute bg-black opacity-80 z-[1] duration-200 transform delay-600"
                 onClick={() => {
                     setIsOpenModal(false)
                     setError("")
@@ -125,11 +131,12 @@ const Modal: React.FC<modalProp> = (props) => {
                         ) : null
                     }
                     <div></div>
-                    <form className="w-[50%] py-10 px-5 bg-white rounded-2xl">
+                    <form className="w-[50%] form overflow-y-auto overflow-x-hidden py-10 px-5 bg-white rounded-2xl">
                         <div className="grid xl:grid-cols-2 xl:gap-6">
                             {/*firstname*/}
                             <Input
-                                label={"Firstname"}
+                                label={"firstname"}
+                                type={"text"}
                                 content={student.firstname}
                                 onChange={(text) => {
                                     setStudent({...student, firstname: text})
@@ -137,7 +144,8 @@ const Modal: React.FC<modalProp> = (props) => {
                             />
                             {/*lastname*/}
                             <Input
-                                label={"Lastname"}
+                                label={"lastname"}
+                                type={"string"}
                                 content={student.lastname}
                                 onChange={(text) => {
                                     setStudent({...student, lastname: text})
@@ -146,7 +154,8 @@ const Modal: React.FC<modalProp> = (props) => {
                         </div>
                         {/*age*/}
                         <Input
-                            label={"Age"}
+                            label={"age"}
+                            type={"number"}
                             content={student.age}
                             onChange={(text) => {
                                 setStudent({...student, age: text})
@@ -154,7 +163,8 @@ const Modal: React.FC<modalProp> = (props) => {
                         />
                         {/*class*/}
                         <Input
-                            label={"Class"}
+                            label={"class"}
+                            type={"text"}
                             content={student.classStudent}
                             onChange={(text) => {
                                 setStudent({...student, classStudent: text})
@@ -172,9 +182,9 @@ const Modal: React.FC<modalProp> = (props) => {
                                 onChange={handleChangeFile}
                                 required={true}
                                 type="file" />
-                            <div className="mt-1 text-sm text-gray-500 dark:text-gray-500" id="student_avatar_help">
-                                A profile picture for student!
-                            </div>
+                            {
+                                validationFile && <span className="text-xs text-red-600">{validationFile}</span>
+                            }
                         </div>
                         <button type="submit"
                                 onClick={student._id ? handleUpdateStudent : handleCreateStudent}

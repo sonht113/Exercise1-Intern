@@ -1,32 +1,34 @@
 const {studentService} = require('../services/index')
-const { validationResult } = require('express-validator')
 
 /**
  * Create student
  */
 const createStudent = async (req, res) => {
     try {
-        // Finds the validation errors in this request and wraps them in an object with handy functions
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+        let avatar
+        if(req.file && req.file.filename) {
+            avatar = `upload/images/${req.file.filename}`
         }
         const student = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             age: req.body.age,
             classStudent: req.body.classStudent,
-            avatar: `upload/images/${req.file.filename}`
-        }
-        const studentByName = await studentService.getStudentByName(student.firstname, student.lastname)
-        if(studentByName) {
-            return res.status(400).json('Student is exist!')
+            avatar: avatar
         }
         await studentService.createStudent(student)
         return res.status(200).json(student)
     } catch (err) {
-        console.log(err)
-        return res.status(500).json('Can not add student!')
+        const error = {
+            title: "Can't create student!",
+            firstname: err.errors.firstname.message,
+            lastname: err.errors.lastname.message,
+            age: err.errors.age.message,
+            class: err.errors.classStudent.message,
+            avatar: err.errors.avatar.message
+        }
+        console.log('Error1233:', error)
+        return res.status(500).json(error.firstname)
     }
 }
 
@@ -36,9 +38,6 @@ const createStudent = async (req, res) => {
 const getStudents = async (req, res) => {
     try {
         const students = await studentService.queryStudent(req.query.page, req.query.limit)
-        if(students.length === 0) {
-            return res.status(404).json('Not found any student!')
-        }
         return res.status(200).json(students)
     } catch (e) {
         return res.status(500).json(e)
@@ -65,33 +64,19 @@ const getStudentById = async (req, res) => {
  */
 const updateStudentById = async (req, res) => {
     try {
-        const student = await studentService.getStudentById(req.params.studentId)
-        if(!student) {
-            return res.status.json('Not found student!')
+        let avatar
+        if(req.file && req.file.filename) {
+            avatar = `upload/images/${req.file.filename}`
         }
-        // Finds the validation errors in this request and wraps them in an object with handy functions
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
         const newStudent = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             age: req.body.age,
             classStudent: req.body.classStudent,
-            avatar: `upload/images/${req.file.filename}`
+            avatar: avatar
         }
-        if(newStudent.firstname === student.firstname && newStudent.lastname === student.lastname) {
-            await studentService.updateStudentById(req.params.studentId, newStudent)
-        } else {
-            const studentByName = await studentService.getStudentByName(newStudent.firstname, newStudent.lastname)
-            if(studentByName) {
-                return res.status(500).json('Student is exist!')
-            }
-            await studentService.updateStudentById(req.params.studentId, newStudent)
-            return res.status(200).json(newStudent)
-        }
+        await studentService.updateStudentById(req.params.studentId, newStudent)
+        return res.status(200).json(newStudent)
     } catch (e) {
         console.log(e)
         return res.status(500).json(e)

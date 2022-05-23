@@ -47,7 +47,7 @@ const queryStudent = async (page, limit) => {
  */
 const getStudentById = async (studentId) => {
     const student = await Student.findById(studentId);
-    return student;
+    return student
 }
 
 /**
@@ -67,7 +67,8 @@ const getStudentByName = async (firstname, lastname) => {
  * @return {Promise<Student>}
  */
 const updateStudentById = async (studentId, studentBody) => {
-    return Student.findByIdAndUpdate(studentId, studentBody);
+    const student = await Student.findByIdAndUpdate(studentId, studentBody);
+    return student
 }
 
 /**

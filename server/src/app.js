@@ -36,6 +36,8 @@ app.use('/students', studentRouter)
 app.use('/users', userRouter)
 app.use('/auth', authRouter)
 
+
+
 db.connectDb();
 
 app.listen(PORT, () => {

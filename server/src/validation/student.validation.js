@@ -1,17 +1,46 @@
-const {check} = require('express-validator')
+const Joi = require('joi')
+const {objectId} = require('./custom.validation')
 
-const validateCreateStudent = () => {
-    return [
-        check('firstname', 'firstname does not Empty').not().isEmpty({ignore_whitespace: false}),
-        check('lastname', 'lastname does not Empty').not().isEmpty({ignore_whitespace: true}),
-        check('age', 'age does not Empty and not < 6').not().isEmpty(),
-        check('class', 'class does not Empty').not().isEmpty(),
-        check('avatar', 'avatar does not Empty').not().isEmpty({ignore_whitespace: false})
-    ]
+const createStudent = {
+      body: Joi.object().keys({
+            firstname: Joi.string().required(),
+            lastname: Joi.string().required(),
+            age: Joi.number().integer().required(),
+            classStudent: Joi.string().required(),
+            avatar: Joi.any()
+      })
 }
 
-const validateStudent = {
-    validateCreateStudent: validateCreateStudent
+const getStudents = {
+      query: Joi.object().keys({
+            limit: Joi.number().integer(),
+            page: Joi.number().integer(),
+      })
 }
 
-module.exports = {validateStudent}
+const updateStudent = {
+      params: Joi.object().keys({
+            studentId: Joi.required().custom(objectId),
+      }),
+      body: Joi.object()
+            .keys({
+                  firstname: Joi.string().required(),
+                  lastname: Joi.string().required(),
+                  age: Joi.number().integer().required(),
+                  classStudent: Joi.string().required(),
+                  avatar: Joi.any()
+            })
+}
+
+const deleteStudent = {
+      params: Joi.object().keys({
+            productId: Joi.string().custom(objectId),
+      }),
+}
+
+module.exports = {
+      createStudent,
+      getStudents,
+      updateStudent,
+      deleteStudent
+}

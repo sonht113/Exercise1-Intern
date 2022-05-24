@@ -2,7 +2,7 @@ import { useState } from 'react'
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
-import StudentPage from "./pages/studentPage";
+import StudentPage from "./pages/studentPage/studentPage";
 import {AnimatePresence} from "framer-motion";
 
 function App() {

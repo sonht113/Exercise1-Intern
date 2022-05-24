@@ -7,12 +7,12 @@ const studentApi = {
         const url = '/students/add-student'
         return await axiosClient.post(url, data)
     },
-    getAll: async (): Promise<ListResponse<Student>> => {
+    getAll: async (page: number, limit: number): Promise<ListResponse<Student>> => {
         const url = '/students/all-student'
         return await axiosClient.get(url, {
             params: {
-                page: 1,
-                limit: 10
+                page: page,
+                limit: limit
             }
         })
     },

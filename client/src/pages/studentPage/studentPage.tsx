@@ -1,17 +1,19 @@
 import React, {useEffect, useRef, useState} from "react";
 import {MdOutlineAccountCircle} from 'react-icons/md';
 import {FaPlus} from 'react-icons/fa';
-import {useAppDispatch, useAppSelector} from "../app/hook";
+import {useAppDispatch, useAppSelector} from "../../app/hook";
 
 
-import Header from "../components/Header/Header";
-import studentApi from "../api/studentApi";
-import {studentSlice} from "../slice/studentSlice";
-import {selectRemainingStudents} from "../app/selector";
-import {Student, StudentDocument} from "../models/Student";
-import Modal from "../components/Modal/Modal";
-import ConfirmModal from "../components/ConfirmModal/ConfirmModal";
-import ListStudent from "../components/ListStudent/ListStudent";
+import Header from "../../components/Header/Header";
+import studentApi from "../../api/studentApi";
+import {studentSlice} from "../../slice/studentSlice";
+import {selectRemainingStudents} from "../../app/selector";
+import {Student, StudentDocument} from "../../models/Student";
+import Modal from "../../components/Modal/Modal";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
+import ListStudent from "../../components/ListStudent/ListStudent";
+import {Pagination} from "@nextui-org/react";
+import StudentForm from "./components/studentForm";
 
 
 const StudentPage: React.FC = () => {
@@ -34,7 +36,7 @@ const StudentPage: React.FC = () => {
     // GET STUDENTS
     let getStudents = () => {
         studentApi
-            .getAll()
+            .getAll(1, 3)
             .then((res) => {
                 dispatch(studentSlice.actions.setStudents(res))
             })
@@ -114,7 +116,6 @@ const StudentPage: React.FC = () => {
     }
     // ===============EDIT UPDATE===================
     const handleEdit = (student: Student) => {
-        console.log(student);
 
         setStudentModal(student)
         setIsOpenModal(true)
@@ -125,6 +126,7 @@ const StudentPage: React.FC = () => {
         setStudentDelete(student)
     }
 
+    // @ts-ignore
     return(
         <div>
             <Header />
@@ -140,18 +142,21 @@ const StudentPage: React.FC = () => {
                 </div>
                 {/*Modal*/}
                 <Modal
-                    refCurrent={ref}
-                    error={error}
                     setError={setError}
-                    validationFile={validationFile}
                     isOpenModal={isOpenModal}
                     setIsOpenModal={setIsOpenModal}
-                    handleChangeFile={handleChangeFile}
-                    studentModal={studentModal}
-                    setStudentModal={setStudentModal}
-                    handleCreateStudent={handleCreateStudent}
-                    handleUpdateStudent={handleUpdateStudent}
+                >
+                    <StudentForm
+                        refCurrent={ref}
+                        error={error}
+                        validationFile={validationFile}
+                        handleChangeFile={handleChangeFile}
+                        studentModal={studentModal}
+                        setStudentModal={setStudentModal}
+                        handleCreateStudent={handleCreateStudent}
+                        handleUpdateStudent={handleUpdateStudent}
                     />
+                </Modal>
 
                 {/*Confirm Modal*/}
                 {
@@ -168,6 +173,10 @@ const StudentPage: React.FC = () => {
                     listStudent={listStudent}
                     handleEdit={handleEdit}
                     handleDelete={handleDelete}/>
+                {/*Pagination*/}
+                {/*<div  className="mt-10 flex justify-center">*/}
+                {/*    <Pagination color="gradient" total={10} />*/}
+                {/*</div>*/}
             </div>
         </div>
     )

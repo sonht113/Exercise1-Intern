@@ -19,16 +19,7 @@ const createStudent = async (req, res) => {
         await studentService.createStudent(student)
         return res.status(200).json(student)
     } catch (err) {
-        const error = {
-            title: "Can't create student!",
-            firstname: err.errors.firstname.message,
-            lastname: err.errors.lastname.message,
-            age: err.errors.age.message,
-            class: err.errors.classStudent.message,
-            avatar: err.errors.avatar.message
-        }
-        console.log('Error1233:', error)
-        return res.status(500).json(error.firstname)
+        return res.status(500).json("Can't create student! Please enter the value!")
     }
 }
 

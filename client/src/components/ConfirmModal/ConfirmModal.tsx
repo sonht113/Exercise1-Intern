@@ -3,54 +3,30 @@ import studentApi from "../../api/studentApi";
 import {StudentDocument} from "../../models/Student";
 
 interface confirmProp {
-    setIsOpen: any;
-    isOpen: boolean;
-    setStudentDelete: any;
-    setCheckDeleteStudent: any;
+    isOpenConfirmModal: boolean;
     student: StudentDocument;
+    handleCancel: () => void;
+    handleDelete: (e: any) => void;
 }
 const ConfirmModal:React.FC<confirmProp> = (props) => {
-    const {setIsOpen, isOpen, setStudentDelete, setCheckDeleteStudent, student} = props
+    const {isOpenConfirmModal, student, handleCancel, handleDelete} = props
 
-    const [id, setId] = useState<string | undefined>('')
-    const [firstname, setFirstName] = useState<string>('')
-    const [lastname, setLastName] = useState<string>('')
-
-    useEffect(() => {
-        setId(student._id)
-        setFirstName(student.firstname)
-        setLastName(student.lastname)
-    }, [student]);
-
-    const handleCancel = () => {
-        setIsOpen(false)
-        setStudentDelete(null)
-    }
-
-    const handleDelete = (e: any) => {
-        e.preventDefault()
-        studentApi
-            .delete(id)
-            .then(() => {
-                setCheckDeleteStudent(true)
-                setIsOpen(false)
-            })
-            .catch((err) => {
-                console.log(err)
-                setCheckDeleteStudent(false)
-            })
-    }
 
     return(
         <div className={
-            isOpen
+            isOpenConfirmModal
                 ? "fixed w-full h-[100%] top-0 left-0 z-30 flex items-start justify-center transition"
                 : "fixed w-full h-[100%] top-0 left-0 z-[1000] flex items-start justify-center invisible opacity-0 scale-50 transition"
         }>
             <a className="w-full h-[100%] top-0 left-0 absolute bg-black opacity-80 z-[1] duration-200 transform delay-600"></a>
             <div className="confirm-modal absolute top-[30%] w-[30%] bg-white py-5 px-5 z-[2]">
                 <div className="confirm-modal__title">
-                    <span className="text-sm">You want to delete: <span className="text-md font-bold text-green-600">{lastname + ' ' + firstname}</span>. </span>
+                    <span className="text-sm">
+                        You want to delete:
+                        <span className="text-md font-bold text-green-600">
+                            {student.lastname + ' ' + student.firstname}
+                        </span>.
+                    </span>
                     <p className="text-sm text-red-600 font-bold">Are you sure?</p>
                 </div>
                 <div className="list-button flex justify-around items-center mt-5">

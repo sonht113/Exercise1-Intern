@@ -1,46 +1,26 @@
 const Joi = require('joi')
-const {objectId} = require('./custom.validation')
 
-const createStudent = {
-      body: Joi.object().keys({
-            firstname: Joi.string().required(),
-            lastname: Joi.string().required(),
-            age: Joi.number().integer().required(),
-            classStudent: Joi.string().required(),
-            avatar: Joi.any()
-      })
-}
+const createStudent = Joi.object().keys(
+    {
+        firstname: Joi.string().required(),
+        lastname: Joi.string().required(),
+        age: Joi.number().integer().required(),
+        classStudent: Joi.string().required(),
+        student_pic: Joi.any().allow()
+    }
+)
 
-const getStudents = {
-      query: Joi.object().keys({
-            limit: Joi.number().integer(),
-            page: Joi.number().integer(),
-      })
-}
-
-const updateStudent = {
-      params: Joi.object().keys({
-            studentId: Joi.required().custom(objectId),
-      }),
-      body: Joi.object()
-            .keys({
-                  firstname: Joi.string().required(),
-                  lastname: Joi.string().required(),
-                  age: Joi.number().integer().required(),
-                  classStudent: Joi.string().required(),
-                  avatar: Joi.any()
-            })
-}
-
-const deleteStudent = {
-      params: Joi.object().keys({
-            productId: Joi.string().custom(objectId),
-      }),
-}
+const updateStudent = Joi.object()
+    .keys({
+        firstname: Joi.string().empty(' '),
+        lastname: Joi.string().empty(' '),
+        age: Joi.number().integer().empty(' '),
+        classStudent: Joi.string().empty(' '),
+        student_pic: Joi.any().allow()
+    })
+    .min(1)
 
 module.exports = {
       createStudent,
-      getStudents,
       updateStudent,
-      deleteStudent
 }

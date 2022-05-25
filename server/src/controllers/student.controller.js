@@ -5,6 +5,7 @@ const {studentService} = require('../services/index')
  */
 const createStudent = async (req, res) => {
     try {
+        console.log(req.body)
         let avatar
         if(req.file && req.file.filename) {
             avatar = `upload/images/${req.file.filename}`
@@ -19,7 +20,10 @@ const createStudent = async (req, res) => {
         await studentService.createStudent(student)
         return res.status(200).json(student)
     } catch (err) {
-        return res.status(500).json("Can't create student! Please enter the value!")
+        return res.status(500).json({
+            error: err.errors,
+            title: "Can't create student!"
+        })
     }
 }
 
@@ -68,9 +72,9 @@ const updateStudentById = async (req, res) => {
         }
         await studentService.updateStudentById(req.params.studentId, newStudent)
         return res.status(200).json(newStudent)
-    } catch (e) {
-        console.log(e)
-        return res.status(500).json(e)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
     }
 }
 

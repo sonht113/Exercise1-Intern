@@ -14,6 +14,7 @@ interface IProps {
 
 const ListStudent: React.FC<IProps> = (props) => {
     const { listStudent, handleEdit, handleDelete } = props;
+
     return(
         <>
             <div className="pt-5 w-[97%] z-0">

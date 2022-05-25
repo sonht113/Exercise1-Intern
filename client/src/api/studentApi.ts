@@ -3,7 +3,7 @@ import axiosClient from "./axiosClient";
 import {ListResponse} from "../models/Common";
 
 const studentApi = {
-    add: async (data: FormData): Promise<Student> => {
+    add: async (data: Student): Promise<Student> => {
         const url = '/students/add-student'
         return await axiosClient.post(url, data)
     },

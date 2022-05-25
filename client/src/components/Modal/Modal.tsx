@@ -10,6 +10,7 @@ interface modalProp {
     setIsOpenModal: any;
     setError: any;
     children: any;
+    setValidationFile: any;
 };
 
 
@@ -17,6 +18,7 @@ const Modal: React.FC<modalProp> = (props) => {
     const {
         isOpenModal,
         setIsOpenModal,
+        setValidationFile,
         setError} = props
 
     return(
@@ -29,10 +31,12 @@ const Modal: React.FC<modalProp> = (props) => {
                 onClick={() => {
                     setIsOpenModal(false)
                     setError("")
+                    setValidationFile("")
             }}></a>
             <button className="close-modal absolute top-3 right-5 z-[5]" onClick={() => {
                 setIsOpenModal(false)
                 setError("")
+                setValidationFile("")
             }}>
                 <IoCloseCircleSharp className="text-5xl fill-white" />
             </button>

@@ -9,7 +9,6 @@ const Student = require('../models/Student')
  * @param avatar
  * @return {Promise<Student>}
  */
-// hinh sai ten bien o day a
 const createStudent = async ({firstname, lastname, age, classStudent, avatar}) => {
     return Student.create({
         firstname: firstname,
@@ -27,7 +26,7 @@ const createStudent = async ({firstname, lastname, age, classStudent, avatar}) =
 const queryStudent = async (page, limit) => {
     const pageNumber = page || 1
 
-    const students = await Student.find()
+    const students = await Student.find().select("_id firstname lastname age classStudent avatar")
         .limit(limit)
         .skip((limit * pageNumber) - limit)
 

@@ -21,6 +21,9 @@ const StudentPage: React.FC = () => {
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
     const [file, setFile] = useState(null)
     const [validationFile, setValidationFile] = useState<string>("")
+    const [checkUpdate, setCheckUpdate] = useState<boolean>(false)
+
+    const [ob, setOb] = useState<object | {} >({})
     // @ts-ignore
     const [studentModal, setStudentModal] = useState<StudentDocument>({})
     // @ts-ignore
@@ -56,7 +59,7 @@ const StudentPage: React.FC = () => {
         getStudents()
     }, [])
 
-    const handleChangeFile =(e: any) => {
+    const handleChangeFile = (e: any) => {
         setFile(e.target.files[0])
         if(e.target.files.length) {
             setValidationFile("")
@@ -66,16 +69,14 @@ const StudentPage: React.FC = () => {
     }
 
     let formData = new FormData()
-
     Object.entries(studentModal).forEach((value, index) => {
         formData.append(value[0], value[1])
     })
     // @ts-ignore
     formData.append('student_pic', file)
-
-    for (let pair of formData.entries()) {
-        console.log(pair);
-    }
+    // for (let pair of formData.entries()) {
+    //     console.log(pair[0]+ ', ' + pair[1]);
+    // }
 
     // =================CREATE STUDENT======================
     const handleCreateStudent = (e: any) => {
@@ -109,7 +110,7 @@ const StudentPage: React.FC = () => {
                 getStudents()
             })
             .catch((err) => {
-                console.log(err)
+                console.log(err.response.data.details)
                 setError(err)
             })
     }
@@ -133,8 +134,14 @@ const StudentPage: React.FC = () => {
     }
     // ===============EDIT UPDATE===================
     const handleEdit = (student: Student) => {
-
-        setStudentModal(student)
+        setCheckUpdate(true)
+        setStudentModal({...studentModal,
+            firstname: student.firstname,
+            lastname: student.lastname,
+            age: student.age,
+            classStudent: student.classStudent,
+            avatar: student.avatar
+        })
         setIsOpenModal(true)
     }
     // ================EDIT DELETE=============
@@ -162,6 +169,7 @@ const StudentPage: React.FC = () => {
                     setError={setError}
                     isOpenModal={isOpenModal}
                     setIsOpenModal={setIsOpenModal}
+                    setCheckUpdate={setCheckUpdate}
                     setValidationFile={setValidationFile}
                 >
                     <StudentForm
@@ -169,6 +177,7 @@ const StudentPage: React.FC = () => {
                         error={error}
                         validationFile={validationFile}
                         handleChangeFile={handleChangeFile}
+                        checkUpdate={checkUpdate}
                         studentModal={studentModal}
                         setStudentModal={setStudentModal}
                         handleCreateStudent={handleCreateStudent}

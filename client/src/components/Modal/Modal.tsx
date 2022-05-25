@@ -8,6 +8,7 @@ import {StudentDocument} from "../../models/Student";
 interface modalProp {
     isOpenModal: boolean;
     setIsOpenModal: any;
+    setCheckUpdate: any;
     setError: any;
     children: any;
     setValidationFile: any;
@@ -18,6 +19,7 @@ const Modal: React.FC<modalProp> = (props) => {
     const {
         isOpenModal,
         setIsOpenModal,
+        setCheckUpdate,
         setValidationFile,
         setError} = props
 
@@ -30,12 +32,14 @@ const Modal: React.FC<modalProp> = (props) => {
             <a className="w-full min-h-screen top-0 left-0 absolute bg-black opacity-80 z-[1] duration-200 transform delay-600"
                 onClick={() => {
                     setIsOpenModal(false)
+                    setCheckUpdate(false)
                     setError("")
                     setValidationFile("")
             }}></a>
             <button className="close-modal absolute top-3 right-5 z-[5]" onClick={() => {
                 setIsOpenModal(false)
                 setError("")
+                setCheckUpdate(false)
                 setValidationFile("")
             }}>
                 <IoCloseCircleSharp className="text-5xl fill-white" />

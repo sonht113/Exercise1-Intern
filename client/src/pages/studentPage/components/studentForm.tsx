@@ -7,6 +7,7 @@ interface Props {
     refCurrent: any;
     error: ErrorDocument;
     validationFile: string;
+    checkUpdate: boolean;
     handleChangeFile: any;
     studentModal: StudentDocument;
     setStudentModal: any;
@@ -20,6 +21,7 @@ const StudentForm: React.FC<Props> = (props) => {
         validationFile,
         handleChangeFile,
         studentModal,
+        checkUpdate,
         setStudentModal,
         handleCreateStudent,
         handleUpdateStudent} = props
@@ -27,7 +29,7 @@ const StudentForm: React.FC<Props> = (props) => {
         <div className="modal relative w-full z-[2]">
             <div className="modal-title mt-5">
                 <h2 className="text-center text-white text-2xl font-bold">
-                    { studentModal._id ? "Update Student" : "Create Student" }
+                    { checkUpdate ? "Update Student" : "Create Student" }
                 </h2>
             </div>
             <div className="form-data relative flex justify-center mt-5">
@@ -95,9 +97,9 @@ const StudentForm: React.FC<Props> = (props) => {
                         }
                     </div>
                     <button type="submit"
-                            onClick={studentModal._id ? handleUpdateStudent : handleCreateStudent}
+                            onClick={checkUpdate ? handleUpdateStudent : handleCreateStudent}
                             className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                        {studentModal._id ? "Update" : "Create"}
+                        {checkUpdate ? "Update" : "Create"}
                     </button>
                 </form>
             </div>

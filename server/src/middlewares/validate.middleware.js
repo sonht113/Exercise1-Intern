@@ -4,7 +4,7 @@ exports.validate = (schema) => (req, res, next) => {
   } = schema.validate(req.body, {abortEarly: false});
   if (error) {
     res.status(422)
-        .send(error.details);
+        .json(error);
   } else {
     next();
   }

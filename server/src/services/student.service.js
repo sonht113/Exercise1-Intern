@@ -67,7 +67,7 @@ const getStudentByName = async (firstname, lastname) => {
  * @return {Promise<Student>}
  */
 const updateStudentById = async (studentId, studentBody) => {
-    const student = await Student.findByIdAndUpdate(studentId, studentBody);
+    const student = await Student.findByIdAndUpdate(studentId, studentBody, {new: true});
     return student
 }
 

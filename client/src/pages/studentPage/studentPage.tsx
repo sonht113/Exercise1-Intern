@@ -14,7 +14,7 @@ import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import ListStudent from "../../components/ListStudent/ListStudent";
 import {Pagination} from "@nextui-org/react";
 import StudentForm from "./components/studentForm";
-
+import {ErrorDocument} from "../../models/Error";
 
 const StudentPage: React.FC = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
@@ -26,17 +26,26 @@ const StudentPage: React.FC = () => {
     // @ts-ignore
     const [studentDelete, setStudentDelete] = useState<StudentDocument>({})
     //Error
-    const [error, setError] = useState<string>("")
+    const [error, setError] = useState<ErrorDocument>({
+        errors: {
+            firstname: {},
+            lastname: {},
+            age: {},
+            classStudent: {},
+            avatar: {}
+        },
+        title: ""
+    })
 
     const ref = useRef<HTMLInputElement>(null)
     const dispatch = useAppDispatch()
 
     const listStudent = useAppSelector(selectRemainingStudents).students
 
-    // GET STUDENTS
+    // ================GET STUDENTS======================
     let getStudents = () => {
         studentApi
-            .getAll(1, 3)
+            .getAll(1, 10)
             .then((res) => {
                 dispatch(studentSlice.actions.setStudents(res))
             })
@@ -57,25 +66,32 @@ const StudentPage: React.FC = () => {
     }
 
     let formData = new FormData()
-    Object.entries(studentModal).filter(value => value !== studentModal.avatar).forEach((value, index) => {
+
+    Object.entries(studentModal).forEach((value, index) => {
         formData.append(value[0], value[1])
     })
     // @ts-ignore
     formData.append('student_pic', file)
 
+    for (let pair of formData.entries()) {
+        console.log(pair);
+    }
+
     // =================CREATE STUDENT======================
     const handleCreateStudent = (e: any) => {
         e.preventDefault()
+        // @ts-ignore
         studentApi.add(formData)
             .then((res) => {
                 setFile(null)
                 // @ts-ignore
                 ref.current.value = ""
-                setError("")
+                setError({})
                 setIsOpenModal(false)
                 getStudents()
             })
             .catch((err) => {
+                console.log(err.response.data)
                 setError(err.response.data)
             })
     }
@@ -88,12 +104,13 @@ const StudentPage: React.FC = () => {
                 setFile(null)
                 // @ts-ignore
                 ref.current.value = ""
-                setError("")
+                setError({})
                 setIsOpenModal(false)
                 getStudents()
             })
             .catch((err) => {
-                setError(err.response.data)
+                console.log(err)
+                setError(err)
             })
     }
     // =================DELETE STUDENT========================
@@ -145,6 +162,7 @@ const StudentPage: React.FC = () => {
                     setError={setError}
                     isOpenModal={isOpenModal}
                     setIsOpenModal={setIsOpenModal}
+                    setValidationFile={setValidationFile}
                 >
                     <StudentForm
                         refCurrent={ref}

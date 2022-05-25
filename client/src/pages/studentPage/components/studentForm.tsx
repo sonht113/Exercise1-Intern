@@ -1,10 +1,11 @@
 import Input from "../../../components/Shared/Form/Input";
 import React from "react";
 import {StudentDocument} from "../../../models/Student";
+import {ErrorDocument} from "../../../models/Error";
 
 interface Props {
     refCurrent: any;
-    error: string;
+    error: ErrorDocument;
     validationFile: string;
     handleChangeFile: any;
     studentModal: StudentDocument;
@@ -33,7 +34,7 @@ const StudentForm: React.FC<Props> = (props) => {
                 {
                     error ? (
                         <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-red-600">
-                            {error}
+                            {error.title}
                         </div>
                     ) : null
                 }
@@ -77,7 +78,7 @@ const StudentForm: React.FC<Props> = (props) => {
                             setStudentModal({...studentModal, classStudent: text})
                         }}
                     />
-                    <div className="relative z-0 w-full mb-6 group">
+                    <div className="relative z-0 w-full h-[60px] mb-6 group">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-500"
                                htmlFor="student_avatar">Upload file</label>
                         <input
@@ -90,7 +91,7 @@ const StudentForm: React.FC<Props> = (props) => {
                             required={true}
                             type="file" />
                         {
-                            validationFile && <span className="text-xs text-red-600">{validationFile}</span>
+                            validationFile && <span className="text-[0.6rem] text-red-600 italic"></span>
                         }
                     </div>
                     <button type="submit"

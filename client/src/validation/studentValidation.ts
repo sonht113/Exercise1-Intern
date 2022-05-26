@@ -1,16 +1,13 @@
 
-export const validate = (label:string, value: any) => {
+export const validate = (value: any) => {
     let err: string = ''
-    if(value) {
-        if(label === 'age') {
-            if(value <= 0) {
-                err = 'Age can not <= 0!'
-                return err
-            }
-        }
-        return err
-    } else {
-        err = `The ${label} is required!`
+    if(value < 0) {
+        err = "Age cannot be negative!"
         return err
     }
+    if(value == 0 || value > 100) {
+        err = "Age not valid!"
+        return err
+    }
+    return err
 }

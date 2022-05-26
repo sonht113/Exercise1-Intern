@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-import {MdOutlineAccountCircle} from 'react-icons/md';
 import {FaPlus} from 'react-icons/fa';
 import {useAppDispatch, useAppSelector} from "../../app/hook";
 
@@ -12,34 +11,29 @@ import {Student, StudentDocument} from "../../models/Student";
 import Modal from "../../components/Modal/Modal";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import ListStudent from "../../components/ListStudent/ListStudent";
-import {Pagination} from "@nextui-org/react";
 import StudentForm from "./components/studentForm";
 import {ErrorDocument} from "../../models/Error";
+import {validate} from "../../validation/studentValidation";
 
 const StudentPage: React.FC = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
     const [file, setFile] = useState(null)
-    const [validationFile, setValidationFile] = useState<string>("")
     const [checkUpdate, setCheckUpdate] = useState<boolean>(false)
-
-    const [ob, setOb] = useState<object | {} >({})
     // @ts-ignore
     const [studentModal, setStudentModal] = useState<StudentDocument>({})
+    const [idStudentUpdate, setIdStudentUpdate] = useState<string | undefined>("")
     // @ts-ignore
     const [studentDelete, setStudentDelete] = useState<StudentDocument>({})
     //Error
-    const [error, setError] = useState<ErrorDocument>({
-        errors: {
-            firstname: {},
-            lastname: {},
-            age: {},
-            classStudent: {},
-            avatar: {}
-        },
-        title: ""
+    const [error, setError] = useState<any>(null)
+    const [messageErr, setMessageErr] = useState<ErrorDocument>({
+        firstname: "" ,
+        lastname: "",
+        age: "",
+        classStudent: "",
+        student_pic: ""
     })
-
     const ref = useRef<HTMLInputElement>(null)
     const dispatch = useAppDispatch()
 
@@ -62,9 +56,9 @@ const StudentPage: React.FC = () => {
     const handleChangeFile = (e: any) => {
         setFile(e.target.files[0])
         if(e.target.files.length) {
-            setValidationFile("")
+            setMessageErr({...messageErr, student_pic: ""})
         } else {
-            setValidationFile("Please choose image!")
+            setMessageErr({...messageErr, student_pic: "Please choose image!"})
         }
     }
 
@@ -74,9 +68,6 @@ const StudentPage: React.FC = () => {
     })
     // @ts-ignore
     formData.append('student_pic', file)
-    // for (let pair of formData.entries()) {
-    //     console.log(pair[0]+ ', ' + pair[1]);
-    // }
 
     // =================CREATE STUDENT======================
     const handleCreateStudent = (e: any) => {
@@ -87,33 +78,45 @@ const StudentPage: React.FC = () => {
                 setFile(null)
                 // @ts-ignore
                 ref.current.value = ""
-                setError({})
+                setError(null)
                 setIsOpenModal(false)
                 getStudents()
             })
             .catch((err) => {
-                console.log(err.response.data)
-                setError(err.response.data)
+                setError(err.response.data.details)
             })
     }
-    // ===============UPDATE STUDENT========================
+
+    useEffect(() => {
+        let obErr:ErrorDocument = messageErr
+        if(error !== null) {
+            error.forEach((item: any) => {
+                obErr = ({...obErr, [item.context.label]: item.message})
+            })
+            setMessageErr(obErr)
+        } else {
+            setMessageErr(obErr)
+        }
+    }, [error])
+
+    // ===============UPDATE STUDENT========================"
     const handleUpdateStudent = (e: any) => {
         e.preventDefault()
         // @ts-ignore
-        studentApi.update(studentModal._id, formData)
+        studentApi.update(idStudentUpdate, formData)
             .then((res) => {
                 setFile(null)
                 // @ts-ignore
                 ref.current.value = ""
-                setError({})
+                setError(null)
                 setIsOpenModal(false)
                 getStudents()
             })
             .catch((err) => {
-                console.log(err.response.data.details)
-                setError(err)
+                setError(err.response.data.details)
             })
     }
+
     // =================DELETE STUDENT========================
     const handleDeleteConfirm = (e: any) => {
         e.preventDefault()
@@ -127,11 +130,13 @@ const StudentPage: React.FC = () => {
                 console.log(err)
             })
     }
-    // CANCEL
+
+    // ===============CANCEL======================
     const handleCancel = () => {
         setIsOpenConfirmModal(false)
         setStudentDelete({})
     }
+
     // ===============EDIT UPDATE===================
     const handleEdit = (student: Student) => {
         setCheckUpdate(true)
@@ -142,13 +147,24 @@ const StudentPage: React.FC = () => {
             classStudent: student.classStudent,
             avatar: student.avatar
         })
+        setIdStudentUpdate(student._id)
         setIsOpenModal(true)
     }
+
     // ================EDIT DELETE=============
     const handleDelete = (student: Student) => {
         setIsOpenConfirmModal(true)
         setStudentDelete(student)
     }
+
+    // ================VALIDATE===============
+    useEffect(() => {
+        if(studentModal) {
+            setMessageErr({...messageErr, age: validate(studentModal.age)})
+        } else {
+            setMessageErr({...messageErr, age: ""})
+        }
+    }, [studentModal]);
 
     // @ts-ignore
     return(
@@ -168,14 +184,15 @@ const StudentPage: React.FC = () => {
                 <Modal
                     setError={setError}
                     isOpenModal={isOpenModal}
+                    setMessageErr={setMessageErr}
+                    setIdStudentUpdate={setIdStudentUpdate}
                     setIsOpenModal={setIsOpenModal}
                     setCheckUpdate={setCheckUpdate}
-                    setValidationFile={setValidationFile}
                 >
                     <StudentForm
                         refCurrent={ref}
-                        error={error}
-                        validationFile={validationFile}
+                        messageErr={messageErr}
+                        setMessageErr={setMessageErr}
                         handleChangeFile={handleChangeFile}
                         checkUpdate={checkUpdate}
                         studentModal={studentModal}
@@ -200,10 +217,6 @@ const StudentPage: React.FC = () => {
                     listStudent={listStudent}
                     handleEdit={handleEdit}
                     handleDelete={handleDelete}/>
-                {/*Pagination*/}
-                {/*<div  className="mt-10 flex justify-center">*/}
-                {/*    <Pagination color="gradient" total={10} />*/}
-                {/*</div>*/}
             </div>
         </div>
     )

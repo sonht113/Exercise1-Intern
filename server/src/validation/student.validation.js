@@ -5,8 +5,7 @@ const createStudent = Joi.object().keys(
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
         age: Joi.number().integer().required(),
-        classStudent: Joi.string().required(),
-        student_pic: Joi.any().allow()
+        classStudent: Joi.string().required()
     }
 )
 

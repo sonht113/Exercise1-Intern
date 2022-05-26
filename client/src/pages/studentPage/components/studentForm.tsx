@@ -5,8 +5,8 @@ import {ErrorDocument} from "../../../models/Error";
 
 interface Props {
     refCurrent: any;
-    error: ErrorDocument;
-    validationFile: string;
+    setMessageErr: any;
+    messageErr: ErrorDocument;
     checkUpdate: boolean;
     handleChangeFile: any;
     studentModal: StudentDocument;
@@ -16,15 +16,16 @@ interface Props {
 }
 const StudentForm: React.FC<Props> = (props) => {
     const {
-        error,
         refCurrent,
-        validationFile,
+        setMessageErr,
+        messageErr,
         handleChangeFile,
         studentModal,
         checkUpdate,
         setStudentModal,
         handleCreateStudent,
         handleUpdateStudent} = props
+
     return(
         <div className="modal relative w-full z-[2]">
             <div className="modal-title mt-5">
@@ -32,21 +33,16 @@ const StudentForm: React.FC<Props> = (props) => {
                     { checkUpdate ? "Update Student" : "Create Student" }
                 </h2>
             </div>
-            <div className="form-data relative flex justify-center mt-5">
-                {
-                    error ? (
-                        <div className="absolute top-3 left-0 right-0 w-[200px] mx-auto font-bold text-center translate-[50%] z-[5] text-xs text-red-600">
-                            {error.title}
-                        </div>
-                    ) : null
-                }
-                <div></div>
-                <form className="w-[50%] form overflow-y-auto overflow-x-hidden py-20 px-5 bg-white rounded-2xl">
+            <div className="form-data relative flex justify-center">
+                <form className="w-[50%] form overflow-y-auto overflow-x-hidden py-10 px-5 bg-white rounded-2xl">
                     <div className="grid xl:grid-cols-2 xl:gap-6">
                         {/*firstname*/}
                         <Input
                             label={"firstname"}
                             type={"text"}
+                            setMessageErr={setMessageErr}
+                            obErr={messageErr}
+                            messageErr={messageErr.firstname}
                             content={studentModal.firstname}
                             onChange={(text) => {
                                 setStudentModal({...studentModal, firstname: text})
@@ -56,6 +52,9 @@ const StudentForm: React.FC<Props> = (props) => {
                         <Input
                             label={"lastname"}
                             type={"string"}
+                            setMessageErr={setMessageErr}
+                            obErr={messageErr}
+                            messageErr={messageErr.lastname}
                             content={studentModal.lastname}
                             onChange={(text) => {
                                 setStudentModal({...studentModal, lastname: text})
@@ -66,6 +65,9 @@ const StudentForm: React.FC<Props> = (props) => {
                     <Input
                         label={"age"}
                         type={"number"}
+                        setMessageErr={setMessageErr}
+                        obErr={messageErr}
+                        messageErr={messageErr.age}
                         content={studentModal.age}
                         onChange={(text) => {
                             setStudentModal({...studentModal, age: text})
@@ -73,8 +75,11 @@ const StudentForm: React.FC<Props> = (props) => {
                     />
                     {/*class*/}
                     <Input
-                        label={"class-student"}
+                        label={"classStudent"}
                         type={"text"}
+                        setMessageErr={setMessageErr}
+                        obErr={messageErr}
+                        messageErr={messageErr.classStudent}
                         content={studentModal.classStudent}
                         onChange={(text) => {
                             setStudentModal({...studentModal, classStudent: text})
@@ -93,7 +98,7 @@ const StudentForm: React.FC<Props> = (props) => {
                             required={true}
                             type="file" />
                         {
-                            validationFile && <span className="text-[0.6rem] text-red-600 italic"></span>
+                            messageErr.student_pic ? <span className="text-[0.6rem] text-red-600 italic">Student_pic is required!</span> : null
                         }
                     </div>
                     <button type="submit"

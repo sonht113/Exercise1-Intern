@@ -30,7 +30,6 @@ const createStudent = async (req, res) => {
 const getStudents = async (req, res) => {
     try {
         const students = await studentService.queryStudent(req.query.page, req.query.limit)
-        console.log(students)
         return res.status(200).json(students)
     } catch (e) {
         return res.status(500).json(e)

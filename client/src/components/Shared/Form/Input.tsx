@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {ErrorDocument} from "../../../models/Error";
 
 interface inputProps {
@@ -21,7 +21,7 @@ const Input: React.FC<inputProps> = (props, ref: any) => {
                    value={content || ''}
                    onKeyDown={(evt) => {
                        label === "age"
-                           ? (["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault())
+                           ? (["e", "E", "+"].includes(evt.key) && evt.preventDefault())
                            : (null)
                        }
                    }

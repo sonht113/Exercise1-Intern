@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {FaPlus} from 'react-icons/fa';
 import {useAppDispatch, useAppSelector} from "../../app/hook";
-
+import {Pagination} from "@nextui-org/react";
 
 import Header from "../../components/Header/Header";
 import studentApi from "../../api/studentApi";
@@ -20,6 +20,8 @@ const StudentPage: React.FC = () => {
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
     const [file, setFile] = useState(null)
     const [checkUpdate, setCheckUpdate] = useState<boolean>(false)
+    const [totalPage, setTotalPage] = useState<number>(1)
+    const [pageNumber, setPageNumber] = useState<number>(1)
     // @ts-ignore
     const [studentModal, setStudentModal] = useState<StudentDocument>({})
     const [idStudentUpdate, setIdStudentUpdate] = useState<string | undefined>("")
@@ -42,8 +44,9 @@ const StudentPage: React.FC = () => {
     // ================GET STUDENTS======================
     let getStudents = () => {
         studentApi
-            .getAll(1, 10)
+            .getAll(pageNumber, 4)
             .then((res) => {
+                setTotalPage(res.pagination.totalPage)
                 dispatch(studentSlice.actions.setStudents(res))
             })
             .catch((err: Error) => console.log(err))
@@ -83,6 +86,7 @@ const StudentPage: React.FC = () => {
                 getStudents()
             })
             .catch((err) => {
+                console.log(err)
                 setError(err.response.data.details)
             })
     }
@@ -159,12 +163,18 @@ const StudentPage: React.FC = () => {
 
     // ================VALIDATE===============
     useEffect(() => {
-        if(studentModal) {
+        if(studentModal.age) {
             setMessageErr({...messageErr, age: validate(studentModal.age)})
-        } else {
-            setMessageErr({...messageErr, age: ""})
         }
     }, [studentModal]);
+
+    const handleChangePage = (page: number) => {
+        setPageNumber(page)
+    }
+
+    useEffect(() => {
+        getStudents()
+    }, [pageNumber])
 
     // @ts-ignore
     return(
@@ -201,7 +211,6 @@ const StudentPage: React.FC = () => {
                         handleUpdateStudent={handleUpdateStudent}
                     />
                 </Modal>
-
                 {/*Confirm Modal*/}
                 {
                     isOpenConfirmModal
@@ -216,7 +225,11 @@ const StudentPage: React.FC = () => {
                 <ListStudent
                     listStudent={listStudent}
                     handleEdit={handleEdit}
-                    handleDelete={handleDelete}/>
+                    handleDelete={handleDelete}
+                />
+                <div className="flex justify-center mt-10">
+                    <Pagination total={totalPage} onChange={(page: number) => handleChangePage(page)}/>
+                </div>
             </div>
         </div>
     )

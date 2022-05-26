@@ -26,15 +26,17 @@ const createStudent = async ({firstname, lastname, age, classStudent, avatar}) =
 const queryStudent = async (page, limit) => {
     const pageNumber = page || 1
 
+    const allStudent = await Student.find()
     const students = await Student.find().select("_id firstname lastname age classStudent avatar")
         .limit(limit)
         .skip((limit * pageNumber) - limit)
-
+    const totalPage = (allStudent.length/limit).toFixed()
     return {
         students: students,
         pagination: {
             page: page,
-            limit: limit
+            limit: limit,
+            totalPage: totalPage
         }
     };
 }

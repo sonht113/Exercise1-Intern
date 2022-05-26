@@ -1,17 +1,16 @@
 import React from "react";
 
 import {IoCloseCircleSharp} from "react-icons/io5";
-import Input from "../Shared/Form/Input";
-import {StudentDocument} from "../../models/Student";
 
 
 interface modalProp {
     isOpenModal: boolean;
     setIsOpenModal: any;
     setCheckUpdate: any;
+    setIdStudentUpdate: any;
+    setMessageErr: any;
     setError: any;
     children: any;
-    setValidationFile: any;
 };
 
 
@@ -19,8 +18,9 @@ const Modal: React.FC<modalProp> = (props) => {
     const {
         isOpenModal,
         setIsOpenModal,
+        setIdStudentUpdate,
+        setMessageErr,
         setCheckUpdate,
-        setValidationFile,
         setError} = props
 
     return(
@@ -33,14 +33,16 @@ const Modal: React.FC<modalProp> = (props) => {
                 onClick={() => {
                     setIsOpenModal(false)
                     setCheckUpdate(false)
-                    setError("")
-                    setValidationFile("")
+                    setIdStudentUpdate("")
+                    setError(null)
+                    setMessageErr({})
             }}></a>
             <button className="close-modal absolute top-3 right-5 z-[5]" onClick={() => {
                 setIsOpenModal(false)
-                setError("")
+                setError(null)
+                setMessageErr({})
                 setCheckUpdate(false)
-                setValidationFile("")
+                setIdStudentUpdate("")
             }}>
                 <IoCloseCircleSharp className="text-5xl fill-white" />
             </button>

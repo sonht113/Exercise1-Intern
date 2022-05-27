@@ -20,12 +20,12 @@ const ConfirmModal:React.FC<confirmProp> = (props) => {
         }>
             <a className="w-full h-[100%] top-0 left-0 absolute bg-black opacity-80 z-[1] duration-200 transform delay-600"></a>
             <div className="confirm-modal absolute top-[30%] w-[30%] bg-white py-5 px-5 z-[2]">
-                <div className="confirm-modal__title">
+                <div className="confirm-modal__title text-center">
                     <span className="text-sm">
                         You want to delete:
                         <span className="text-md font-bold text-green-600">
-                            {student.lastname + ' ' + student.firstname}
-                        </span>.
+                            {' ' + student.lastname + ' ' + student.firstname}
+                        </span>
                     </span>
                     <p className="text-sm text-red-600 font-bold">Are you sure?</p>
                 </div>

@@ -163,10 +163,21 @@ const StudentPage: React.FC = () => {
 
     // ================VALIDATE===============
     useEffect(() => {
+        if(studentModal.firstname) {
+            setMessageErr({...messageErr, firstname: ""})
+        }
+        if(studentModal.lastname) {
+            setMessageErr({...messageErr, lastname: ""})
+        }
         if(studentModal.age) {
             setMessageErr({...messageErr, age: validate(studentModal.age)})
         }
+        if(studentModal.classStudent) {
+            setMessageErr({...messageErr, classStudent: ""})
+        }
     }, [studentModal]);
+
+    console.log(studentModal)
 
     const handleChangePage = (page: number) => {
         setPageNumber(page)
@@ -202,7 +213,6 @@ const StudentPage: React.FC = () => {
                     <StudentForm
                         refCurrent={ref}
                         messageErr={messageErr}
-                        setMessageErr={setMessageErr}
                         handleChangeFile={handleChangeFile}
                         checkUpdate={checkUpdate}
                         studentModal={studentModal}

@@ -5,14 +5,12 @@ interface inputProps {
     label: string;
     type: string;
     content: string;
-    setMessageErr: any;
-    obErr: ErrorDocument;
     messageErr: string;
     onChange: (text: string) => void;
 }
 
 const Input: React.FC<inputProps> = (props, ref: any) => {
-    const {onChange, content, label, setMessageErr, obErr, messageErr, type} = props;
+    const {onChange, content, label, messageErr, type} = props;
 
     return(
         <div className="relative z-0 w-full h-[60px] mb-6 group">
@@ -27,7 +25,6 @@ const Input: React.FC<inputProps> = (props, ref: any) => {
                    }
                    onChange={(e) => {
                        onChange(e.target.value)
-                       setMessageErr({...obErr, [label]: ""})
                    }}
             />
             <label htmlFor="floating_first_name"

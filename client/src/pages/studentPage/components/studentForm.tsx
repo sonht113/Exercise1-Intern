@@ -5,7 +5,6 @@ import {ErrorDocument} from "../../../models/Error";
 
 interface Props {
     refCurrent: any;
-    setMessageErr: any;
     messageErr: ErrorDocument;
     checkUpdate: boolean;
     handleChangeFile: any;
@@ -17,7 +16,6 @@ interface Props {
 const StudentForm: React.FC<Props> = (props) => {
     const {
         refCurrent,
-        setMessageErr,
         messageErr,
         handleChangeFile,
         studentModal,
@@ -40,8 +38,6 @@ const StudentForm: React.FC<Props> = (props) => {
                         <Input
                             label={"firstname"}
                             type={"text"}
-                            setMessageErr={setMessageErr}
-                            obErr={messageErr}
                             messageErr={messageErr.firstname}
                             content={studentModal.firstname}
                             onChange={(text) => {
@@ -52,8 +48,6 @@ const StudentForm: React.FC<Props> = (props) => {
                         <Input
                             label={"lastname"}
                             type={"string"}
-                            setMessageErr={setMessageErr}
-                            obErr={messageErr}
                             messageErr={messageErr.lastname}
                             content={studentModal.lastname}
                             onChange={(text) => {
@@ -65,8 +59,6 @@ const StudentForm: React.FC<Props> = (props) => {
                     <Input
                         label={"age"}
                         type={"number"}
-                        setMessageErr={setMessageErr}
-                        obErr={messageErr}
                         messageErr={messageErr.age}
                         content={studentModal.age}
                         onChange={(text) => {
@@ -77,8 +69,6 @@ const StudentForm: React.FC<Props> = (props) => {
                     <Input
                         label={"classStudent"}
                         type={"text"}
-                        setMessageErr={setMessageErr}
-                        obErr={messageErr}
                         messageErr={messageErr.classStudent}
                         content={studentModal.classStudent}
                         onChange={(text) => {

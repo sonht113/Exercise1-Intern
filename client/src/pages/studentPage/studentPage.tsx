@@ -177,8 +177,6 @@ const StudentPage: React.FC = () => {
         }
     }, [studentModal]);
 
-    console.log(studentModal)
-
     const handleChangePage = (page: number) => {
         setPageNumber(page)
     }
